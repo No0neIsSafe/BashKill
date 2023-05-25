@@ -8,8 +8,7 @@ $hhh = "nononeonasdasd"
 $556 = 777
 $hhh = "nononeonasdasd"
 $afrcv = @"
-using System;
-using System.Runtime.InteropServices;
+
 "@
 $7amada = [System.Runtime.InteropServices.Marshal]
 
