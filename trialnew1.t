@@ -11,4 +11,4 @@ public class afrcv {
 }
 "@
 $7amada = [System.Runtime.InteropServices.Marshal]
-Add-Type -TypeDefinition $afrcv
+Add-Type -TypeDefinition $afrcv -passthru
