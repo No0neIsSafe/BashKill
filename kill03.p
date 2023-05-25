@@ -5,7 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 public class afrcv {
     
-    [DllImport("kernel32")]
+    
     public static extern bool virtualprotect(IntPtr lpAddress, UIntPtr odwsuy, uint flNewProtect, out uint lpflOldProtect);
     
 }
