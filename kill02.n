@@ -3,6 +3,9 @@ $7amada = [System.Runtime.InteropServices.Marshal]
 $afrcv = @"
 using System;
 using System.Runtime.InteropServices;
+public class afrcv {
+    [DllImport("kernel32")]
+}
 "@
 
 $test -TypeDefinition $afrcv
