@@ -5,6 +5,8 @@ using System;
 using System.Runtime.InteropServices;
 public class afrcv {
     [DllImport("kernel32")]
+    public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+    
 }
 "@
 
