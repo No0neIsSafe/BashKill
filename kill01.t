@@ -1,4 +1,4 @@
-$test = Add-Type 
+$test = Add-Typ
 $556 = 777
 $hhh = "nononeonasdasd"
 $556 = 777
