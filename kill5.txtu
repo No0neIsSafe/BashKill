@@ -1,4 +1,5 @@
 $test = Add-Type
+$p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
 using System;
