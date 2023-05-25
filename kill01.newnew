@@ -1,0 +1,7 @@
+$test = Add-Type
+$7amada = [System.Runtime.InteropServices.Marshal]
+$afrcv = @"
+
+"@
+
+$test -TypeDefinition $afrcv
