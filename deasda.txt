@@ -9,18 +9,35 @@ if ($reader.Read()) {
     $crypted_azure = $reader.GetString(1)
     $reader.Close()
     
-    $decrypted_azure = $null
-    $key2.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure)
+    Write-Host "Config XML:"
+    Write-Host $config_azure
+    Write-Host "`nEncrypted data (first 100 chars):"
+    Write-Host $crypted_azure.Substring(0, [Math]::Min(100, $crypted_azure.Length))
     
-    # Dump the raw decrypted XML to see the structure
-    Write-Host "=== RAW DECRYPTED XML ===" 
-    Write-Host $decrypted_azure
-    
-    # Also try key1 in case key2 is wrong
-    Write-Host "`n=== Trying Key 1 ===" 
-    $key1 = $null
-    $km.GetKey(0, [ref]$key1)
-    $decrypted_azure_key1 = $null
-    $key1.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure_key1)
-    Write-Host $decrypted_azure_key1
+    # Try all available keys
+    for ($i = 0; $i -lt 5; $i++) {
+        try {
+            $key = $null
+            $km.GetKey($i, [ref]$key)
+            
+            if ($key -ne $null) {
+                Write-Host "`n=== Key $i found ===" 
+                $decrypted = $null
+                $key.DecryptBase64ToString($crypted_azure, [ref]$decrypted)
+                Write-Host "Decrypted successfully:"
+                Write-Host $decrypted
+                break
+            }
+            else {
+                Write-Host "Key $i is null"
+            }
+        }
+        catch {
+            Write-Host "Key $i error: $($_.Exception.Message)"
+        }
+    }
+}
+else {
+    Write-Host "No Extensible2 found"
+    $reader.Close()
 }
